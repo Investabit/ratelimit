@@ -385,7 +385,7 @@ func TestAvailable(t *testing.T) {
 func BenchmarkWait(b *testing.B) {
 	tb := NewBucket(1, 16*1024)
 	for i := b.N - 1; i >= 0; i-- {
-		tb.Wait(1)
+		tb.Wait()
 	}
 }
 

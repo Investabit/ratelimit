@@ -26,7 +26,7 @@ func (r *reader) Read(buf []byte) (int, error) {
 	if n <= 0 {
 		return n, err
 	}
-	r.bucket.Wait(int64(n))
+	r.bucket.WaitN(int64(n))
 	return n, err
 }
 
@@ -46,6 +46,6 @@ func Writer(w io.Writer, bucket *Bucket) io.Writer {
 }
 
 func (w *writer) Write(buf []byte) (int, error) {
-	w.bucket.Wait(int64(len(buf)))
+	w.bucket.WaitN(int64(len(buf)))
 	return w.w.Write(buf)
 }

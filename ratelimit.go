@@ -164,9 +164,14 @@ func NewBucketWithQuantumAndClock(fillInterval time.Duration, capacity, quantum 
 	}
 }
 
-// Wait takes count tokens from the bucket, waiting until they are
+// Same as WaitN(1)
+func (tb *Bucket) Wait() {
+	tb.WaitN(1)
+}
+
+// WaitN takes count tokens from the bucket, waiting until they are
 // available.
-func (tb *Bucket) Wait(count int64) {
+func (tb *Bucket) WaitN(count int64) {
 	if d := tb.Take(count); d > 0 {
 		tb.clock.Sleep(d)
 	}
@@ -213,6 +218,11 @@ func (tb *Bucket) TakeMaxDuration(count int64, maxWait time.Duration) (time.Dura
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 	return tb.take(tb.clock.Now(), count, maxWait)
+}
+
+// Same as take available except all available tokens are removed.
+func (tb *Bucket) TakeRemainingAvailable() int64 {
+	return tb.TakeAvailable(tb.capacity)
 }
 
 // TakeAvailable takes up to count immediately available tokens from the
